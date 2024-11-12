@@ -1,0 +1,93 @@
+{
+  "app_name": "Puzzle Game",
+  "app_icon": "assets/onboarding_1.png",
+  "cover": "assets/splash.png",
+  "main_color": "2ECC71",
+  "contact": "contact@email.com",
+  "about": "path_to",
+  "privacy": "path_to",
+  "terms": "path_to",
+  "intro": [
+    {
+      "title": "Title 1",
+      "description": "Description 1",
+      "icon": "assets/onboarding_1.png"
+    },
+    {
+      "title": "Title 2",
+      "description": "Description 2",
+      "icon": "assets/onboarding_2.png"
+    },
+    {
+      "title": "Title 3",
+      "description": "Description 3",
+      "icon": "assets/onboarding_3.png"
+    }
+  ],
+  "puzzles": [
+    {
+      "images": [
+        "assets/mission1.jpeg",
+        "assets/mission2.jpeg"
+      ],
+      "level": "Amateur"
+    },
+    {
+      "images": [
+        "assets/mission1.jpeg",
+        "assets/mission2.jpeg"
+      ],
+      "level": "Beginner"
+    },
+    {
+      "images": [
+        "assets/mission1.jpeg",
+        "assets/mission2.jpeg"
+      ],
+      "level": "Trainee"
+    },
+    {
+      "images": [
+        "assets/mission1.jpeg",
+        "assets/mission2.jpeg"
+      ],
+      "level": "Intellectual"
+    },
+    {
+      "images": [
+        "assets/mission1.jpeg",
+        "assets/mission2.jpeg",
+        "assets/mission1.jpeg",
+        "assets/mission1.jpeg"
+      ],
+      "level": "Talent"
+    },
+    {
+      "images": [
+        "assets/mission1.jpeg",
+        "assets/mission2.jpeg",
+        "assets/mission1.jpeg",
+        "assets/onboarding_3.png"
+      ],
+      "level": "Specialist"
+    }
+  ],
+  "ad_priority": [
+    {
+      "network": "AdMob",
+      "priority": 2
+    },
+    {
+      "network": "UnityAds",
+      "priority": 3
+    },
+    {
+      "network": "MetaAds",
+      "priority": 1
+    },
+    {
+      "network": "AppLovin",
+      "priority": 4
+    }
+  ]
+}
