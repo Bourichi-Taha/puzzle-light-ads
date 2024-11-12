@@ -56,12 +56,12 @@ jobs:
     - name: Build APK for Android
       run: flutter build apk --release
       env:
-        JAVA_HOME: /opt/hostedtoolcache/Java_Adopt_jdk/17.x.x/jdk
+        JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.13-11/x64
 
     - name: Build AppBundle for Android
       run: flutter build appbundle --release
       env:
-        JAVA_HOME: /opt/hostedtoolcache/Java_Adopt_jdk/17.x.x/jdk
+        JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.13-11/x64
 
     - name: Move generated files to root dir android
       run: |
