@@ -1,146 +1,39 @@
-name: Build Flutter App
+name: Build Flutter APK
 
 on:
   push:
     branches:
-      - main
+      - main  # Change this to your desired branch
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
-
-
-  build-android:
-    name: Build Android
+  build-apk:
     runs-on: ubuntu-latest
+    env:
+      CI: false
 
     steps:
-    # - name: Send Webhook with Run ID
-    #   run: |
-    #     response=$(curl -X POST \
-    #       -H "Content-Type: application/json" \
-    #       -H "x-webhook-secret: ${{ secrets.WEBHOOK_SECRET_GITHUB }}" \
-    #       -d '{"run_id": "${{ github.run_id }}", "repoName": "${{ github.event.repository.name }}", "repoOwner": "${{ github.repository_owner }}", "type": "android", "appId": "${{ github.event.client_payload.appId }}", "userId": "${{ github.event.client_payload.userId }}"}' \
-    #       -w "%{http_code}" \
-    #       -o /dev/null \
-    #       -s \
-    #       https://user.mobtwintest.com/builder/workflow-webhook/build-info)
-    
-    
-    #     if [ "$response" -ne 200 ]; then
-    #       echo "Webhook failed with status code $response"
-    #       exit 1
-    #     fi
-    #   shell: bash
-    - name: Checkout code
-      uses: actions/checkout@v3
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
 
+      # Step 2: Set up Flutter environment
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '<latest>'  # Specify the Flutter version or use "latest"
 
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        channel: stable
-        flutter-version: '3.24.2'
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: flutter pub get
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v2
-      with:
-        distribution: 'temurin' # You can choose the JDK distribution (like 'zulu' or 'adopt')
-        java-version: '17'
-    
-    - name: java home
-      run: echo $JAVA_HOME
+      # Step 4: Build APK
+      - name: Build APK
+        run: flutter build apk --release
 
-    - name: Install dependencies
-      run: flutter pub get
-
-
-    - name: Build APK for Android
-      run: flutter build apk --release
-      env:
-        JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.13-11/x64
-
-    - name: Build AppBundle for Android
-      run: flutter build appbundle --release
-      env:
-        JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.13-11/x64
-
-    - name: Move generated files to root dir android
-      run: |
-        mv build/app/outputs/flutter-apk/app-release.apk ./
-        mv build/app/outputs/bundle/release/app-release.aab ./
-        mv assets/db.json ./
- 
-    - name: Transfer apk to server
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.SERVER_HOST }}
-        username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: 22
-        source: "app-release.apk"
-        target: "/root/android"
-    - name: Transfer aab to server
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.SERVER_HOST }}
-        username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: 22
-        source: "app-release.aab"
-        target: "/root/android"
-    - name: Transfer db json to server
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.SERVER_HOST }}
-        username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: 22
-        source: "db.json"
-        target: "/root/android"
-    
-
-  # build-ios:
-  #   name: Build iOS
-  #   runs-on: macos-latest
-
-  #   steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v3
-
-  #   - name: Set up Flutter
-  #     uses: subosito/flutter-action@v2
-  #     with:
-  #       channel: stable
-  #       flutter-version: '3.24.2'
-
-  #   - name: Install dependencies
-  #     run: flutter pub get
-
-  #   - name: Build iOS App
-  #     run: flutter build ios --release --no-codesign
-  #   - name: Move generated files to root dir ios
-  #     run: |
-  #       mv build/ios/iphoneos/Runner.app ./
-  #   - name: Upload Artifact
-  #     uses: actions/upload-artifact@v3
-  #     with:
-  #       name: Runner.app
-  #       path: Runner.app
-    
-  # transfer_to_server:
-  #   needs: build-ios
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Download Artifact
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: Runner.app
-  #         path: Runner.app
-  #     - name: Transfer ipa to server
-  #       uses: appleboy/scp-action@master
-  #       with:
-  #         host: ${{ secrets.SERVER_HOST }}
-  #         username: ${{ secrets.SERVER_USER }}
-  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
-  #         port: 22
-  #         source: "Runner.app"
-  #         target: "/root/ios"
+      # Step 5: Upload APK as artifact
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
